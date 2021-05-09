@@ -33,10 +33,12 @@ export default function BasicTextFields() {
 
   return (
     <Container style={{ marginTop: "5%" }}>
-      <h1 style={{ textAlign: "left" }}>Completed Todos</h1>
-      {todos.map((obj,index) => {
+      <h1 style={{ textAlign: "left" }}>{todos.length} Current Todos</h1>
+      {todos.map((obj, index) => {
         return (
-          <div key={index} className={classes.lists}>{obj.title + " " + obj.body}</div>
+          <div key={index} className={classes.lists}>
+            {obj.title + " " + obj.body}
+          </div>
         );
       })}
     </Container>

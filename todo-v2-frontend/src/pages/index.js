@@ -9,6 +9,8 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Create from "../components/NewTodo";
+import Completed from "../components/Completed";
+import Pending from "../components/Pending";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -85,10 +87,10 @@ export default function FullWidthTabs() {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-            Item One
+            <Pending />
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
-            Item Two
+            <Completed />
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
             <Create />

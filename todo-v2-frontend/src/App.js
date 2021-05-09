@@ -1,8 +1,8 @@
 import "./App.css";
-import NavBar from "../components/AppBar";
-import LoginPage from "../pages/Login";
-import RegisterPage from "../pages/Register";
-import Home from "../pages/index";
+import NavBar from "./components/AppBar";
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
+import Home from "./pages/index";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 function App() {

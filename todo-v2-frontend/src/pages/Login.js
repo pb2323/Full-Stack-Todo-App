@@ -75,9 +75,7 @@ function SignIn({ loginUser, user }) {
     }
   }, [user, prevUser]);
 
-  console.log(userState);
-
-  if (!userState.token || userState.token.length === 0)
+  if (!userState.token)
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -159,7 +157,7 @@ function SignIn({ loginUser, user }) {
       </Container>
     );
   else {
-    return <Redirect to={{ pathname: "/todos" }}></Redirect>;
+    return <Redirect to={{pathname:"/todos"}}></Redirect>;
   }
 }
 

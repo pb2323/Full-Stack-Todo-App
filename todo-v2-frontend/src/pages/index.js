@@ -11,6 +11,8 @@ import Box from "@material-ui/core/Box";
 import Create from "../components/NewTodo";
 import Completed from "../components/Completed";
 import Pending from "../components/Pending";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FullWidthTabs() {
+function FullWidthTabs({ user }) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -64,39 +66,49 @@ export default function FullWidthTabs() {
     setValue(index);
   };
 
-  return (
-    <Container maxWidth="md">
-      <div className={classes.root}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            aria-label="full width tabs example"
+  if (!!user.token)
+    return (
+      <Container maxWidth="md">
+        <div className={classes.root}>
+          <AppBar position="static" color="default">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label="full width tabs example"
+            >
+              <Tab label="Pending" {...a11yProps(0)} />
+              <Tab label="Completed" {...a11yProps(1)} />
+              <Tab label="Create" {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
+          <SwipeableViews
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={value}
+            onChangeIndex={handleChangeIndex}
           >
-            <Tab label="Pending" {...a11yProps(0)} />
-            <Tab label="Completed" {...a11yProps(1)} />
-            <Tab label="Create" {...a11yProps(2)} />
-          </Tabs>
-        </AppBar>
-        <SwipeableViews
-          axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-          index={value}
-          onChangeIndex={handleChangeIndex}
-        >
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            <Pending />
-          </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            <Completed />
-          </TabPanel>
-          <TabPanel value={value} index={2} dir={theme.direction}>
-            <Create />
-          </TabPanel>
-        </SwipeableViews>
-      </div>
-    </Container>
-  );
+            <TabPanel value={value} index={0} dir={theme.direction}>
+              <Pending />
+            </TabPanel>
+            <TabPanel value={value} index={1} dir={theme.direction}>
+              <Completed />
+            </TabPanel>
+            <TabPanel value={value} index={2} dir={theme.direction}>
+              <Create />
+            </TabPanel>
+          </SwipeableViews>
+        </div>
+      </Container>
+    );
+  else return <Redirect to={{ pathname: "/login" }}></Redirect>;
 }
+
+const mapStateToProps = (storeState) => {
+  return {
+    user: storeState.userState.user,
+  };
+};
+
+export default connect(mapStateToProps)(FullWidthTabs);

@@ -28,14 +28,15 @@ export const registerUser = (user) => (dispatch) => {
     .post("/users/register", {
       email: user.email,
       password: user.password,
-      name: user.email,
+      name: user.name,
     })
     .then((response) => {
+      console.log(response);
       localStorage.setItem("token", response.data.token);
       response.status === 200 &&
         dispatch({
           type: REGISTER_USER,
-          payload: { ...user, token: response.data.token },
+          payload: { ...response.data.user[0], token: response.data.token },
         });
     })
     .catch((err) => {

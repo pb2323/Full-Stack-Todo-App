@@ -13,7 +13,7 @@ function App() {
         <Route exact path="/todos" component={Home} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
-        <Redirect to="/login" />
+        <Redirect to={{pathname:"/todos"}} />
       </Switch>
     </div>
   );

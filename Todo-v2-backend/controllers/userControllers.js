@@ -26,15 +26,25 @@ module.exports = {
   },
   registerUser: async (req, res) => {
     try {
+      const { email, password, name } = req.body;
       const user = new User({ ...req.body });
-      const token = await jwt.sign({ email, password }, "Secret Key", {
-        expiresIn: 1000 * 60 * 60 * 3,
-      });
       await user.save();
+      const updatedUser = await User.find({ email: email });
+      console.log(updatedUser);
+      const updatedEmail = updatedUser.email,
+        updatedPassword = updatedUser.password;
+      const token = await jwt.sign(
+        { updatedEmail, updatedPassword },
+        "Secret Key",
+        {
+          expiresIn: 1000 * 60 * 60 * 3,
+        }
+      );
       return res.json({
         message: "Registration Successfull",
         status: 200,
         token,
+        user: updatedUser,
       });
     } catch (err) {
       console.log(err.message);

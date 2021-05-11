@@ -36,7 +36,7 @@ userSchema.statics.findByEmailAndPassword = async (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
       userObj = await User.findOne({ email });
-      const isMatched = bcrypt.compare(password, userObj.password);
+      const isMatched = await bcrypt.compare(password, userObj.password);
       isMatched ? resolve(userObj) : reject("Incorrect credentials");
     } catch (err) {
       reject(err.message);
@@ -44,7 +44,7 @@ userSchema.statics.findByEmailAndPassword = async (email, password) => {
   });
 };
 
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function (next) {
   let user = this;
   if (user.isModified("password")) {
     try {

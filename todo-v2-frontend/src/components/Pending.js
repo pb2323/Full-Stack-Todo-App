@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { connect } from "react-redux";
+import {
+  getTodos,
+  updateTodos,
+  deleteTodos,
+  createTodos,
+} from "../redux/actions/todoActions";
 
 const useStyles = makeStyles((theme) => ({
   listsImp: {
@@ -22,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BasicTextFields() {
+function BasicTextFields({ getTodos }) {
   const [todos, setTodos] = React.useState([
     { title: "title", body: "body" },
     { title: "title", body: "body" },
@@ -30,6 +37,8 @@ export default function BasicTextFields() {
     { title: "title", body: "body" },
   ]);
   const classes = useStyles();
+
+
 
   return (
     <Container style={{ marginTop: "5%" }}>
@@ -44,3 +53,17 @@ export default function BasicTextFields() {
     </Container>
   );
 }
+
+const mapStateToProps = (storeState) => {
+  return {
+    user: storeState.userState.user,
+    todos: storeState.todoState.todos,
+  };
+};
+
+export default connect(mapStateToProps, {
+  getTodos,
+  createTodos,
+  updateTodos,
+  deleteTodos,
+})(BasicTextFields);

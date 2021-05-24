@@ -7,21 +7,28 @@ import {
 import axios from "axios";
 axios.defaults.baseURL = "http://127.0.0.1:1234";
 
-export const getTodos = () => (dispatch) => {
-  axios
-    .get("/todos", {
+export const getTodos = () => async (dispatch) => {
+  try {
+    const response = await axios.get("/todos", {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
       },
-    })
-    .then((response) => {
-      console.log(response);
-      dispatch({ type: GET_TODOS, payload: response.data });
-    })
-    .catch((err) => {
-      console.log(err);
     });
+
+    console.log(response);
+    dispatch({ type: GET_TODOS, payload: response.data });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const setTodo = () => async (dispatch) => {
+  try {
+    dispatch({ type: "SET_TODOS" });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const createTodos = (input) => (dispatch) => {

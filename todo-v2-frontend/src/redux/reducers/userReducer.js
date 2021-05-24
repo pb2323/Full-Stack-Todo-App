@@ -1,19 +1,18 @@
-import { LOGIN_USER,REGISTER_USER } from "../actionTypes";
+import { LOGIN_USER, REGISTER_USER } from "../actionTypes";
 
-let state = {
-  user: {},
+let initialState = {
+  user: [],
 };
-const reducer = (a, action, initialState = state) => {
+const reducer = (state = initialState, action) => {
   let { payload, type } = action;
   switch (type) {
     case LOGIN_USER:
-      console.log(payload,"payload");
-      return { ...initialState, user: payload };
+      return { ...state, user: payload };
     case REGISTER_USER:
-      console.log(payload,"");
-      return {...initialState,user:payload};
+      return { ...state, user: payload };
     default:
-      return initialState;
+      console.log("Default user");
+      return state;
   }
 };
 

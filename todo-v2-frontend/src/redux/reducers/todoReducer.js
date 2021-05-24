@@ -5,21 +5,27 @@ import {
   DELETE_TODOS,
 } from "../actionTypes";
 
-let state = {
+const initialState = {
   todos: [],
+  sample: [],
 };
 
-const todoReducer = (a, action, initialState = state) => {
+const todoReducer = (state = { ...initialState }, action) => {
   let { type, payload } = action;
   switch (type) {
     case GET_TODOS:
-      return { ...initialState, todos: payload };
+      console.log({ ...state, todos: payload.todos });
+      return { ...state, todos: payload.todos };
+    case "SET_TODOS":
+      // console.log({ ...state, todos: payload.todos });
+      return { ...state, todos: [1, 2] };
     case CREATE_TODOS:
-      let arr = initialState.todos;
+      let arr = state.todos;
       arr.push(payload);
-      return { ...initialState, todos: arr };
+      return { ...state, todos: arr };
     default:
-      return initialState;
+      console.log("Default todo");
+      return state ;
   }
 };
 

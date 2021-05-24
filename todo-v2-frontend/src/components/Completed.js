@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import {
+  getTodos,
+  updateTodos,
+  deleteTodos,
+  createTodos,
+} from "../redux/actions/todoActions";
+import { connect } from "react-redux";
+
 
 const useStyles = makeStyles((theme) => ({
   listsImp: {
@@ -22,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BasicTextFields() {
+function BasicTextFields({getTodos}) {
+
   const [todos, setTodos] = React.useState([
     { title: "title", body: "body" },
     { title: "title", body: "body" },
@@ -34,11 +43,27 @@ export default function BasicTextFields() {
   return (
     <Container style={{ marginTop: "5%" }}>
       <h1 style={{ textAlign: "left" }}>Completed Todos</h1>
-      {todos.map((obj,index) => {
+      {todos.map((obj, index) => {
         return (
-          <div key={index} className={classes.lists}>{obj.title + " " + obj.body}</div>
+          <div key={index} className={classes.lists}>
+            {obj.title + " " + obj.body}
+          </div>
         );
       })}
     </Container>
   );
 }
+
+const mapStateToProps = (storeState) => {
+  return {
+    user: storeState.userState.user,
+    todo: storeState.todoState.todos,
+  };
+};
+
+export default connect(mapStateToProps, {
+  getTodos,
+  createTodos,
+  updateTodos,
+  deleteTodos,
+})(BasicTextFields);

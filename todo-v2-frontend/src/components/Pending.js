@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import {
@@ -7,6 +8,7 @@ import {
   updateTodos,
   deleteTodos,
   createTodos,
+  setTodo,
 } from "../redux/actions/todoActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,17 +31,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BasicTextFields({ getTodos }) {
+function BasicTextFields(props) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    props.getTodos();
+    // setTimeout(() => {
+    //   console.log('here');
+    //  props.getTodos();
+    // }, 10000);
+    // dispatch(props.getTodos());
+  }, []);
+
   const [todos, setTodos] = React.useState([
-    { title: "title", body: "body" },
-    { title: "title", body: "body" },
-    { title: "title", body: "body" },
-    { title: "title", body: "body" },
+    // { title: "title", body: "body" },
+    // { title: "title", body: "body" },
+    // { title: "title", body: "body" },
+    // { title: "title", body: "body" },
   ]);
   const classes = useStyles();
-
-
-
   return (
     <Container style={{ marginTop: "5%" }}>
       <h1 style={{ textAlign: "left" }}>{todos.length} Current Todos</h1>
@@ -57,13 +67,14 @@ function BasicTextFields({ getTodos }) {
 const mapStateToProps = (storeState) => {
   return {
     user: storeState.userState.user,
-    todos: storeState.todoState.todos,
+    todo: storeState.todoState.todos,
   };
 };
 
 export default connect(mapStateToProps, {
   getTodos,
   createTodos,
+  setTodo,
   updateTodos,
   deleteTodos,
 })(BasicTextFields);

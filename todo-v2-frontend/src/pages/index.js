@@ -53,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FullWidthTabs({ user }) {
+function FullWidthTabs({ user,todos }) {
+  console.log(user,todos);
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -66,7 +67,7 @@ function FullWidthTabs({ user }) {
     setValue(index);
   };
 
-  if (!!user.token)
+  if (!!localStorage.getItem("token"))
     return (
       <Container maxWidth="md">
         <div className={classes.root}>
@@ -102,13 +103,15 @@ function FullWidthTabs({ user }) {
         </div>
       </Container>
     );
-  else return <Redirect to={{ pathname: "/login" }}></Redirect>;
+  else {
+    return <Redirect to={{ pathname: "/login" }}></Redirect>;}
 }
 
 const mapStateToProps = (storeState) => {
   return {
     user: storeState.userState.user,
+    todos:storeState.todoState.todos
   };
 };
 
-export default connect(mapStateToProps)(FullWidthTabs);
+export default connect(mapStateToProps,{})(FullWidthTabs);

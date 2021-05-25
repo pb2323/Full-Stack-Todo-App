@@ -3,7 +3,13 @@ const jwt = require("jsonwebtoken");
 
 const authenticate = async (req, res, next) => {
   try {
-    const payload = await jwt.verify(req.headers.authorization, "Secret Key");
+    console.log(req.headers.authorization, req.body);
+    const payload = await jwt.verify(
+      req.headers.authorization
+        ? req.headers.authorization
+        : req.body.headers.Authorization,
+      "Secret Key"
+    );
     const user = await User.findOne({ email: payload.email });
     console.log(user);
     req.user = user;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -8,6 +8,16 @@ import Paper from "@material-ui/core/Paper";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { connect } from "react-redux";
+import {
+  getTodos,
+  updateTodos,
+  deleteTodos,
+  createTodos,
+  currentTodo,
+} from "../redux/actions/todoActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,11 +28,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BasicTextFields() {
+function BasicTextFields({
+  createTodos,
+  handleChangeTab,
+  current,
+  currentTodo,
+  updateTodos,
+}) {
   const [title, setTitle] = React.useState("");
   const [memo, setMemo] = React.useState("");
   const [checked, changeCheck] = React.useState(false);
   const classes = useStyles();
+  toast.configure();
+  const onSubmit = (e) => {
+    if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
+    else {
+      if (current.hasOwnProperty("title")) {
+        currentTodo({});
+        updateTodos({ title, memo, important: checked }, current.id);
+      } else createTodos({ title, memo, important: checked });
+      handleChangeTab(e, 0);
+    }
+  };
 
   const handleChange = (event) => {
     setTitle(event.target.value);
@@ -32,11 +59,17 @@ export default function BasicTextFields() {
     setMemo(event.target.value);
   };
 
+  useEffect(() => {
+    setTitle(current.title);
+    setMemo(current.memo);
+    changeCheck(current.important);
+  }, [current]);
+
   return (
     <Container style={{ marginTop: "5%" }}>
       <Paper elevation={3}>
         <h2>New Todo</h2>
-        <form className={classes.root} noValidate autoComplete="off">
+        <form className={classes.root} autoComplete="off">
           <FormControl>
             <InputLabel htmlFor="component-simple">Title</InputLabel>
             <Input
@@ -68,11 +101,33 @@ export default function BasicTextFields() {
             }
             label="Important"
           />
-          <Button variant="contained" color="primary">
-            Create
+          <Button onClick={onSubmit} variant="contained" color="primary">
+            Save
+          </Button>
+          <Button onClick={onSubmit} variant="contained" color="success">
+            Complete
+          </Button>
+          <Button onClick={onSubmit} variant="contained" color="secondary">
+            Delete
           </Button>
         </form>
       </Paper>
     </Container>
   );
 }
+
+const mapStateToProps = (storeState) => {
+  return {
+    user: storeState.userState.user,
+    todo: storeState.todoState.todos,
+    current: storeState.todoState.current,
+  };
+};
+
+export default connect(mapStateToProps, {
+  getTodos,
+  createTodos,
+  updateTodos,
+  deleteTodos,
+  currentTodo,
+})(BasicTextFields);

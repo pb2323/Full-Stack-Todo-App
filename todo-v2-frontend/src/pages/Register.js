@@ -61,12 +61,13 @@ function Register({ user, registerUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [userState, setUser] = useState({});
   const prevUser = usePrevious(user);
 
   const onsubmit = async (e) => {
     e.preventDefault();
-    await registerUser({ email, password, name });
+    await registerUser({ email, password, name, rememberMe });
   };
 
   useEffect(() => {
@@ -132,7 +133,13 @@ function Register({ user, registerUser }) {
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  value={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  color="primary"
+                />
+              }
               label="Remember me"
             />
             <Button
@@ -143,13 +150,11 @@ function Register({ user, registerUser }) {
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              Register
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
+                <Link href="#" variant="body2"></Link>
               </Grid>
               <Grid item>
                 <Link href="/login" variant="body2">

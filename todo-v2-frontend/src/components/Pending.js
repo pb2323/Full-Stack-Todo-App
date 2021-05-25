@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch } from "react-redux";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import {
@@ -8,7 +7,7 @@ import {
   updateTodos,
   deleteTodos,
   createTodos,
-  setTodo,
+  currentTodo,
 } from "../redux/actions/todoActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,46 +16,52 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px",
     borderBottomRightRadius: ".25rem",
     borderBottomLeftRadius: ".25rem",
-    margin: "2%",
     backgroundColor: "#f5c6cb",
     color: "#721c24",
+    border: "1px solid rgba(0,0,0,.125)",
+    cursor: "pointer",
   },
   lists: {
     textAlign: "left",
     padding: "10px",
-    borderBottomRightRadius: ".25rem",
-    borderBottomLeftRadius: ".25rem",
-    margin: "2%",
-    borderStyle: "ridge",
+    border: "1px solid rgba(0,0,0,.125)",
+    cursor: "pointer",
   },
 }));
 
 function BasicTextFields(props) {
-  const dispatch = useDispatch();
-
   useEffect(() => {
     props.getTodos();
-    // setTimeout(() => {
-    //   console.log('here');
-    //  props.getTodos();
-    // }, 10000);
-    // dispatch(props.getTodos());
   }, []);
 
-  const [todos, setTodos] = React.useState([
-    // { title: "title", body: "body" },
-    // { title: "title", body: "body" },
-    // { title: "title", body: "body" },
-    // { title: "title", body: "body" },
-  ]);
+  useEffect(() => {
+    props.currentTodo({});
+    setTodos(props.todo);
+  }, [props.todo]);
+
+  const [todos, setTodos] = React.useState([]);
   const classes = useStyles();
   return (
     <Container style={{ marginTop: "5%" }}>
       <h1 style={{ textAlign: "left" }}>{todos.length} Current Todos</h1>
       {todos.map((obj, index) => {
         return (
-          <div key={index} className={classes.lists}>
-            {obj.title + " " + obj.body}
+          <div
+            onClick={(e) => {
+              console.log("Inside here");
+              props.currentTodo({
+                title: obj.title,
+                memo: obj.memo,
+                important: obj.important,
+                id: obj._id,
+              });
+              props.handleChangeTab(e, 2);
+            }}
+            key={index}
+            className={!obj.important ? classes.lists : classes.listsImp}
+          >
+            {obj.title}
+            {obj.memo === "" ? "" : " - " + obj.memo}
           </div>
         );
       })}
@@ -74,7 +79,7 @@ const mapStateToProps = (storeState) => {
 export default connect(mapStateToProps, {
   getTodos,
   createTodos,
-  setTodo,
   updateTodos,
   deleteTodos,
+  currentTodo,
 })(BasicTextFields);

@@ -5,34 +5,41 @@ module.exports = {
   getTodos: async (req, res) => {
     try {
       const todos = await Todo.find({ user: req.user.id });
-      return res.json({ todos:todos, status: 200 });
+      return res.json({ todos: todos, status: 200 });
     } catch (err) {
       return res.status(500).send("Internal Server Error");
     }
   },
   createTodo: async (req, res) => {
     try {
-      const todo = new Todo({ ...req.body });
+      const todo = new Todo({ ...req.body.data });
       todo.user = req.user.id;
       const user = req.user;
       user.todos.push(todo.id);
       await user.save();
       await todo.save();
-      return res.json({ message: "Todo created successfully", status: 200 });
+      return res.json({
+        message: "Todo created successfully",
+        status: 200,
+        todo: todo,
+      });
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal server Error");
     }
   },
   updateTodos: async (req, res) => {
     try {
-      const todoId = req.parama.todoId;
+      const todoId = req.params.todoId;
+      const che = await Todo.findById(todoId);
       const todo = await Todo.updateOne(
-        { id: todoId },
-        { ...req.body },
+        { _id: todoId },
+        { ...req.body.data },
         { new: true }
       );
       return res.json({ todo, status: 200 });
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal Server Error");
     }
   },

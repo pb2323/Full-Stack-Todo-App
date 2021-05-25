@@ -6,7 +6,6 @@ module.exports = {
   loginUser: async (req, res) => {
     try {
       const { email, password, rememberMe } = req.body;
-      console.log(email, password, rememberMe);
       const user = await User.findByEmailAndPassword(email, password);
       const passwordHashed = user.password;
       const token = await jwt.sign({ email, passwordHashed }, "Secret Key", {
@@ -30,7 +29,6 @@ module.exports = {
       const user = new User({ ...req.body });
       await user.save();
       const updatedUser = await User.find({ email: email });
-      console.log(updatedUser);
       const updatedEmail = updatedUser.email,
         updatedPassword = updatedUser.password;
       const token = await jwt.sign(

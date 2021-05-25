@@ -3,6 +3,7 @@ import {
   CREATE_TODOS,
   UPDATE_TODOS,
   DELETE_TODOS,
+  CURRENT_TODO,
 } from "../actionTypes";
 import axios from "axios";
 axios.defaults.baseURL = "http://127.0.0.1:1234";
@@ -23,32 +24,33 @@ export const getTodos = () => async (dispatch) => {
   }
 };
 
-export const setTodo = () => async (dispatch) => {
+export const currentTodo = (inp) => async (dispatch) => {
   try {
-    dispatch({ type: "SET_TODOS" });
+    console.log("Dispatching Curr");
+    dispatch({ type: CURRENT_TODO, payload: inp });
   } catch (err) {
     console.log(err);
   }
 };
 
-export const createTodos = (input) => (dispatch) => {
-  axios
-    .post("/todos/create", {
+export const createTodos = (input) => async (dispatch) => {
+  try {
+    const response = await axios.post("/todos/create", {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
       },
-      title: input.title,
-      memo: input.memo,
-      important: input.important,
-    })
-    .then((response) => {
-      console.log(response);
-      dispatch({ type: CREATE_TODOS, payload: response.data });
-    })
-    .catch((err) => {
-      console.log(err);
+      data: {
+        title: input.title,
+        memo: input.memo,
+        important: input.important,
+      },
     });
+    console.log(response);
+    dispatch({ type: CREATE_TODOS, payload: response.data });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const updateTodos = (input, id) => (dispatch) => {
@@ -58,13 +60,15 @@ export const updateTodos = (input, id) => (dispatch) => {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
       },
-      title: input.title,
-      memo: input.memo,
-      important: input.important,
+      data: {
+        title: input.title,
+        memo: input.memo,
+        important: input.important,
+      },
     })
     .then((response) => {
       console.log(response);
-      dispatch({ type: UPDATE_TODOS, payload: response.data });
+      dispatch({ type: UPDATE_TODOS, payload: { ...input, id } });
     })
     .catch((err) => {
       console.log(err);

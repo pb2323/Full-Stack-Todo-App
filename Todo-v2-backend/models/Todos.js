@@ -8,12 +8,11 @@ const todoSchema = new Schema(
       required: true,
       trim: true,
     },
-    body: {
+    memo: {
       type: String,
-      required: true,
       trim: true,
     },
-    isCompleted: {
+    important: {
       type: Boolean,
       default: false,
     },

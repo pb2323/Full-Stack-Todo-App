@@ -13,6 +13,7 @@ import Completed from "../components/Completed";
 import Pending from "../components/Pending";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { currentTodo } from "../redux/actions/todoActions";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -53,8 +54,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FullWidthTabs({ user,todos }) {
-  console.log(user,todos);
+function FullWidthTabs({ user, todos }) {
+  console.log(user, todos);
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -91,27 +92,31 @@ function FullWidthTabs({ user,todos }) {
             onChangeIndex={handleChangeIndex}
           >
             <TabPanel value={value} index={0} dir={theme.direction}>
-              <Pending />
+              <Pending handleChangeTab={handleChange} />
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
               <Completed />
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction}>
-              <Create />
+              <Create
+                handleChangeTab={handleChange}
+                handleChangeTabIndex={handleChangeIndex}
+              />
             </TabPanel>
           </SwipeableViews>
         </div>
       </Container>
     );
   else {
-    return <Redirect to={{ pathname: "/login" }}></Redirect>;}
+    return <Redirect to={{ pathname: "/login" }}></Redirect>;
+  }
 }
 
 const mapStateToProps = (storeState) => {
   return {
     user: storeState.userState.user,
-    todos:storeState.todoState.todos
+    todos: storeState.todoState.todos,
   };
 };
 
-export default connect(mapStateToProps,{})(FullWidthTabs);
+export default connect(mapStateToProps, { currentTodo })(FullWidthTabs);

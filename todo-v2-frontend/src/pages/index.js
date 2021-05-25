@@ -95,7 +95,7 @@ function FullWidthTabs({ user, todos }) {
               <Pending handleChangeTab={handleChange} />
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
-              <Completed />
+              <Completed handleChangeTab={handleChange} />
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction}>
               <Create

@@ -4,11 +4,13 @@ import {
   UPDATE_TODOS,
   DELETE_TODOS,
   CURRENT_TODO,
+  GET_TODOS_COMPLETED,
 } from "../actionTypes";
 
 const initialState = {
   todos: [],
   current: {},
+  completedTodos: [],
 };
 
 const todoReducer = (state = { ...initialState }, action) => {
@@ -18,6 +20,8 @@ const todoReducer = (state = { ...initialState }, action) => {
     case GET_TODOS:
       console.log({ ...state, todos: payload.todos });
       return { ...state, todos: payload.todos };
+    case GET_TODOS_COMPLETED:
+      return { ...state, completedTodos: payload.todos };
     case CURRENT_TODO:
       console.log(payload, type, "Red curr");
       return { ...state, current: payload };
@@ -38,6 +42,10 @@ const todoReducer = (state = { ...initialState }, action) => {
       arr[index].title = title;
       arr[index].memo = memo;
       arr[index].important = important;
+      return { ...state, todos: arr };
+    case DELETE_TODOS:
+      const id = payload;
+      arr = state.todos.filter((x) => x._id !== id);
       return { ...state, todos: arr };
     default:
       console.log("Default todo");

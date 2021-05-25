@@ -40,6 +40,7 @@ function BasicTextFields(props) {
   }, [props.todo]);
 
   const [todos, setTodos] = React.useState([]);
+
   const classes = useStyles();
   return (
     <Container style={{ marginTop: "5%" }}>
@@ -54,6 +55,7 @@ function BasicTextFields(props) {
                 memo: obj.memo,
                 important: obj.important,
                 id: obj._id,
+                isCompleted: false,
               });
               props.handleChangeTab(e, 2);
             }}

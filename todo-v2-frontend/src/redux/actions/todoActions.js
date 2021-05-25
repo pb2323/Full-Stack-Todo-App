@@ -4,6 +4,7 @@ import {
   UPDATE_TODOS,
   DELETE_TODOS,
   CURRENT_TODO,
+  GET_TODOS_COMPLETED,
 } from "../actionTypes";
 import axios from "axios";
 axios.defaults.baseURL = "http://127.0.0.1:1234";
@@ -24,9 +25,24 @@ export const getTodos = () => async (dispatch) => {
   }
 };
 
+export const getTodosCompleted = () => async (dispatch) => {
+  try {
+    const response = await axios.get("/todos/completed", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+
+    console.log(response);
+    dispatch({ type: GET_TODOS_COMPLETED, payload: response.data });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const currentTodo = (inp) => async (dispatch) => {
   try {
-    console.log("Dispatching Curr");
     dispatch({ type: CURRENT_TODO, payload: inp });
   } catch (err) {
     console.log(err);
@@ -64,6 +80,7 @@ export const updateTodos = (input, id) => (dispatch) => {
         title: input.title,
         memo: input.memo,
         important: input.important,
+        isCompleted: input.isCompleted ? input.isCompleted : false,
       },
     })
     .then((response) => {
@@ -77,7 +94,7 @@ export const updateTodos = (input, id) => (dispatch) => {
 
 export const deleteTodos = (id) => (dispatch) => {
   axios
-    .put(`/todos/delete/${id}`, {
+    .delete(`/todos/delete/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
@@ -85,7 +102,7 @@ export const deleteTodos = (id) => (dispatch) => {
     })
     .then((response) => {
       console.log(response);
-      dispatch({ type: DELETE_TODOS, payload: response.data });
+      dispatch({ type: DELETE_TODOS, payload: id });
     })
     .catch((err) => {
       console.log(err);

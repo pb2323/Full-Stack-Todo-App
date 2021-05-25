@@ -4,7 +4,15 @@ const User = require("../models/User");
 module.exports = {
   getTodos: async (req, res) => {
     try {
-      const todos = await Todo.find({ user: req.user.id });
+      const todos = await Todo.find({ user: req.user.id, isCompleted: false });
+      return res.json({ todos: todos, status: 200 });
+    } catch (err) {
+      return res.status(500).send("Internal Server Error");
+    }
+  },
+  getCompletedTodos: async (req, res) => {
+    try {
+      const todos = await Todo.find({ user: req.user.id, isCompleted: true });
       return res.json({ todos: todos, status: 200 });
     } catch (err) {
       return res.status(500).send("Internal Server Error");
@@ -31,7 +39,6 @@ module.exports = {
   updateTodos: async (req, res) => {
     try {
       const todoId = req.params.todoId;
-      const che = await Todo.findById(todoId);
       const todo = await Todo.updateOne(
         { _id: todoId },
         { ...req.body.data },
@@ -45,7 +52,7 @@ module.exports = {
   },
   deleteTodo: async (req, res) => {
     try {
-      const todoId = req.parama.todoId;
+      const todoId = req.params.todoId;
       await Todo.deleteOne({ _id: todoId, user: req.user.id });
       return res.json({ message: "Todo deleted successfully", status: 200 });
     } catch (err) {

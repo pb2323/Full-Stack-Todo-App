@@ -34,20 +34,55 @@ function BasicTextFields({
   current,
   currentTodo,
   updateTodos,
+  deleteTodos,
 }) {
   const [title, setTitle] = React.useState("");
   const [memo, setMemo] = React.useState("");
   const [checked, changeCheck] = React.useState(false);
   const classes = useStyles();
   toast.configure();
+
   const onSubmit = (e) => {
     if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
     else {
       if (current.hasOwnProperty("title")) {
         currentTodo({});
-        updateTodos({ title, memo, important: checked }, current.id);
+        updateTodos(
+          { title, memo, important: checked, isCompleted: false },
+          current.id
+        );
       } else createTodos({ title, memo, important: checked });
       handleChangeTab(e, 0);
+    }
+  };
+
+  const onRecreate = (e) => {
+    if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
+    else {
+      updateTodos(
+        { title, memo, important: checked, isCompleted: false },
+        current.id
+      );
+      currentTodo({});
+      handleChangeTab(e, 0);
+    }
+  };
+
+  const onDelete = (e) => {
+    deleteTodos(current.id);
+    current.isCompleted ? handleChangeTab(e, 1) : handleChangeTab(e, 0);
+    currentTodo({});
+  };
+
+  const onComplete = (e) => {
+    if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
+    else {
+      updateTodos(
+        { title, memo, important: checked, isCompleted: true },
+        current.id
+      );
+      currentTodo({});
+      handleChangeTab(e, 1);
     }
   };
 
@@ -65,6 +100,7 @@ function BasicTextFields({
     changeCheck(current.important);
   }, [current]);
 
+  console.log(current.hasOwnProperty("title"));
   return (
     <Container style={{ marginTop: "5%" }}>
       <Paper elevation={3}>
@@ -101,15 +137,45 @@ function BasicTextFields({
             }
             label="Important"
           />
-          <Button onClick={onSubmit} variant="contained" color="primary">
-            Save
-          </Button>
-          <Button onClick={onSubmit} variant="contained" color="success">
-            Complete
-          </Button>
-          <Button onClick={onSubmit} variant="contained" color="secondary">
-            Delete
-          </Button>
+          {!(
+            current.hasOwnProperty("isCompleted") &&
+            current.isCompleted === true
+          ) ? (
+            <>
+              <Button onClick={onSubmit} variant="contained" color="primary">
+                Save
+              </Button>
+              {current.hasOwnProperty("title") ? (
+                <>
+                  <Button
+                    onClick={onComplete}
+                    variant="contained"
+                    color="success"
+                  >
+                    Mark as Completed
+                  </Button>
+                  <Button
+                    onClick={onDelete}
+                    variant="contained"
+                    color="secondary"
+                  >
+                    Delete
+                  </Button>
+                </>
+              ) : (
+                ""
+              )}
+            </>
+          ) : (
+            <>
+              <Button onClick={onRecreate} variant="contained" color="primary">
+                Recreate
+              </Button>
+              <Button onClick={onDelete} variant="contained" color="secondary">
+                Delete
+              </Button>
+            </>
+          )}
         </form>
       </Paper>
     </Container>

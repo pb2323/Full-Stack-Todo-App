@@ -43,3 +43,8 @@ export const registerUser = (user) => (dispatch) => {
       console.log(err);
     });
 };
+
+export const logoutUser = () => (dispatch) => {
+  localStorage.setItem("token", "");
+  dispatch({ type: LOGIN_USER, payload: {} });
+};

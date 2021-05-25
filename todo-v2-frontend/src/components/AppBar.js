@@ -7,6 +7,9 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { connect } from "react-redux";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { logoutUser } from "../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,8 +23,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ButtonAppBar({ user }) {
+function ButtonAppBar({ user, logoutUser }) {
   const classes = useStyles();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div className={classes.root}>
@@ -38,7 +51,30 @@ function ButtonAppBar({ user }) {
           <Typography variant="h6" className={classes.title}>
             TodoWoo
           </Typography>
-          <Button color="inherit">{user ? user.name : ""}</Button>
+          <Button
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            color="inherit"
+            onClick={handleClick}
+          >
+            {user ? user.name : ""}
+          </Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem
+              onClick={() => {
+                logoutUser();
+                handleClose();
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
     </div>
@@ -51,4 +87,4 @@ const mapStateToProps = (storeState) => {
   };
 };
 
-export default connect(mapStateToProps)(ButtonAppBar);
+export default connect(mapStateToProps, { logoutUser })(ButtonAppBar);

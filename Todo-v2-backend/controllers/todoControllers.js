@@ -4,7 +4,7 @@ const User = require("../models/User");
 module.exports = {
   getTodos: async (req, res) => {
     try {
-      const todos = await Todo.find({ user: req.user.id, isCompleted: false });
+      const todos = await Todo.find({ user: req.user._id, isCompleted: false });
       return res.json({ todos: todos, status: 200 });
     } catch (err) {
       console.log(err);
@@ -13,7 +13,7 @@ module.exports = {
   },
   getCompletedTodos: async (req, res) => {
     try {
-      const todos = await Todo.find({ user: req.user.id, isCompleted: true });
+      const todos = await Todo.find({ user: req.user._id, isCompleted: true });
       return res.json({ todos: todos, status: 200 });
     } catch (err) {
       return res.status(500).send("Internal Server Error");

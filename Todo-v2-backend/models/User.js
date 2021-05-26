@@ -39,7 +39,7 @@ userSchema.statics.findByEmailAndPassword = async (email, password) => {
       const isMatched = await bcrypt.compare(password, userObj.password);
       isMatched ? resolve(userObj) : reject("Incorrect credentials");
     } catch (err) {
-      reject(err.message);
+      reject("User doesnot exist");
     }
   });
 };

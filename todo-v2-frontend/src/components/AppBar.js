@@ -9,7 +9,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { connect } from "react-redux";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { logoutUser } from "../redux/actions/userActions";
+import { deleteUser, logoutUser } from "../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ButtonAppBar({ user, logoutUser }) {
+function ButtonAppBar({ user, logoutUser, deleteUser }) {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -74,6 +74,14 @@ function ButtonAppBar({ user, logoutUser }) {
             >
               Logout
             </MenuItem>
+            <MenuItem
+              onClick={() => {
+                deleteUser();
+                handleClose();
+              }}
+            >
+              Close Account
+            </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
@@ -87,4 +95,6 @@ const mapStateToProps = (storeState) => {
   };
 };
 
-export default connect(mapStateToProps, { logoutUser })(ButtonAppBar);
+export default connect(mapStateToProps, { deleteUser, logoutUser })(
+  ButtonAppBar
+);

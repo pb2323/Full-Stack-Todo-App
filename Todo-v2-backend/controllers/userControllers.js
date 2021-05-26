@@ -21,6 +21,7 @@ module.exports = {
       console.log(err);
       if (err === "Incorrect credentials")
         return res.status(404).send("Invalid credentials");
+      else if (err === "User doesnot exist") return res.status(404).send(err);
       return res.status(500).send("Internal Server Error");
     }
   },
@@ -29,16 +30,21 @@ module.exports = {
       const { email, password, name } = req.body;
       const user = new User({ ...req.body });
       await user.save();
-      const updatedUser = await User.find({ email: email });
+      const updatedUser = await User.findOne({ email: email });
+      console.log(updatedUser, "updatedUser");
       const updatedEmail = updatedUser.email,
         updatedPassword = updatedUser.password;
       const token = await jwt.sign(
-        { updatedEmail, updatedPassword },
+        { email: updatedEmail, password: updatedPassword },
         "Secret Key",
         {
           expiresIn: 1000 * 60 * 60 * 3,
         }
       );
+      console.log(token, "registration token");
+      const payload = await jwt.verify(token, "Secret Key");
+      console.log(payload, "payload");
+      console.log(updatedEmail, updatedPassword);
       return res.json({
         message: "Registration Successfull",
         status: 200,
@@ -52,10 +58,13 @@ module.exports = {
       return res.status(500).send("Internal Server Error");
     }
   },
-  logoutUser: async (req, res) => {
+  deleteUser: async (req, res) => {
     try {
-      localStorage.setItem(("token", null));
-      return res.json({ message: "Logout Successfull", status: 200 });
+      const user = req.user;
+      await user.remove();
+      // const user=await User.findById(user._id);
+      // console.log(user);
+      return res.json({ message: "User removed successfully", status: 200 });
     } catch (err) {
       return res.status(500).send("Internal Server Error");
     }

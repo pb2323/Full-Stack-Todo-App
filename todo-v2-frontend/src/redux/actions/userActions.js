@@ -45,7 +45,7 @@ export const registerUser = (user) => (dispatch) => {
       response.status === 200 &&
         dispatch({
           type: REGISTER_USER,
-          payload: { ...response.data.user[0], token: response.data.token },
+          payload: { ...response.data.user, token: response.data.token },
         });
     })
     .catch((err) => {
@@ -60,4 +60,20 @@ export const logoutUser = () => (dispatch) => {
   dispatch({ type: GET_TODOS, payload: [] });
   dispatch({ type: GET_TODOS_COMPLETED, payload: [] });
   dispatch({ type: CURRENT_TODO, payload: {} });
+};
+
+export const deleteUser = () => async (dispatch) => {
+  try {
+    const response = await axios.post("/users/delete", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+    console.log(response);
+    dispatch(logoutUser());
+  } catch (err) {
+    console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
+  }
 };

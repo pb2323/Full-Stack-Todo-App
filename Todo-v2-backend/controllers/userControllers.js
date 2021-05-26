@@ -18,6 +18,7 @@ module.exports = {
         user: user,
       });
     } catch (err) {
+      console.log(err);
       if (err === "Incorrect credentials")
         return res.status(404).send("Invalid credentials");
       return res.status(500).send("Internal Server Error");
@@ -46,6 +47,8 @@ module.exports = {
       });
     } catch (err) {
       console.log(err.message);
+      if (err.message.slice(0, 37) === "E11000 duplicate key error collection")
+        return res.status(400).send("Email already exists");
       return res.status(500).send("Internal Server Error");
     }
   },

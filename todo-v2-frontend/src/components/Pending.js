@@ -36,7 +36,7 @@ function BasicTextFields(props) {
 
   useEffect(() => {
     props.currentTodo({});
-    setTodos(props.todo);
+    if (props.todo && props.todo.length > 0) setTodos(props.todo);
   }, [props.todo]);
 
   const [todos, setTodos] = React.useState([]);
@@ -44,7 +44,7 @@ function BasicTextFields(props) {
   const classes = useStyles();
   return (
     <Container style={{ marginTop: "5%" }}>
-      <h1 style={{ textAlign: "left" }}>{todos.length} Current Todos</h1>
+      <h1 style={{ textAlign: "left" }}>{todos.length} Current Todo(s)</h1>
       {todos.map((obj, index) => {
         return (
           <div

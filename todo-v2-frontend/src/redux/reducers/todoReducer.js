@@ -7,6 +7,7 @@ import {
   GET_TODOS_COMPLETED,
 } from "../actionTypes";
 
+
 const initialState = {
   todos: [],
   current: {},

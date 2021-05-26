@@ -40,7 +40,7 @@ function BasicTextFields(props) {
 
   useEffect(() => {
     props.currentTodo({});
-    setTodos(props.todo);
+    if (props.todo && props.todo.lenght > 0) setTodos(props.todo);
   }, [props.todo]);
   return (
     <Container style={{ marginTop: "5%" }}>

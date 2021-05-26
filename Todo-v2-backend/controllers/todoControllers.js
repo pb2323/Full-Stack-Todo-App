@@ -7,6 +7,7 @@ module.exports = {
       const todos = await Todo.find({ user: req.user.id, isCompleted: false });
       return res.json({ todos: todos, status: 200 });
     } catch (err) {
+      console.log(err);
       return res.status(500).send("Internal Server Error");
     }
   },

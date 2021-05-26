@@ -7,6 +7,9 @@ import {
   GET_TODOS_COMPLETED,
 } from "../actionTypes";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+toast.configure();
 axios.defaults.baseURL = "http://127.0.0.1:1234";
 
 export const getTodos = () => async (dispatch) => {
@@ -22,6 +25,7 @@ export const getTodos = () => async (dispatch) => {
     dispatch({ type: GET_TODOS, payload: response.data });
   } catch (err) {
     console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
   }
 };
 
@@ -38,6 +42,7 @@ export const getTodosCompleted = () => async (dispatch) => {
     dispatch({ type: GET_TODOS_COMPLETED, payload: response.data });
   } catch (err) {
     console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
   }
 };
 
@@ -46,6 +51,7 @@ export const currentTodo = (inp) => async (dispatch) => {
     dispatch({ type: CURRENT_TODO, payload: inp });
   } catch (err) {
     console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
   }
 };
 
@@ -66,6 +72,7 @@ export const createTodos = (input) => async (dispatch) => {
     dispatch({ type: CREATE_TODOS, payload: response.data });
   } catch (err) {
     console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
   }
 };
 
@@ -89,6 +96,7 @@ export const updateTodos = (input, id) => (dispatch) => {
     })
     .catch((err) => {
       console.log(err);
+      toast.error(err.response.data, { autoClose: 2000 });
     });
 };
 
@@ -106,5 +114,6 @@ export const deleteTodos = (id) => (dispatch) => {
     })
     .catch((err) => {
       console.log(err);
+      toast.error(err.response.data, { autoClose: 2000 });
     });
 };

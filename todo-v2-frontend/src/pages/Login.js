@@ -120,7 +120,7 @@ function SignIn({ loginUser, user }) {
             <FormControlLabel
               control={
                 <Checkbox
-                  value={rememberMe}
+                  checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   color="primary"
                 />

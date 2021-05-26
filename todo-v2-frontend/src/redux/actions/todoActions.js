@@ -5,6 +5,9 @@ import {
   DELETE_TODOS,
   CURRENT_TODO,
   GET_TODOS_COMPLETED,
+  RECREATE_TODOS,
+  CREATE_COMPLETED_TODO,
+  DELETE_COMPLETED_TODOS,
 } from "../actionTypes";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -66,6 +69,7 @@ export const createTodos = (input) => async (dispatch) => {
         title: input.title,
         memo: input.memo,
         important: input.important,
+        isCompleted: input.isCompleted,
       },
     });
     console.log(response);
@@ -76,7 +80,43 @@ export const createTodos = (input) => async (dispatch) => {
   }
 };
 
-export const updateTodos = (input, id) => (dispatch) => {
+export const updateTodos = (input, id) => async (dispatch, getState) => {
+  axios
+    .put(`/todos/update/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      data: {
+        title: input.title,
+        memo: input.memo,
+        important: input.important,
+        isCompleted: input.isCompleted ? input.isCompleted : false,
+      },
+    })
+    .then((response) => {
+      const { todos, completedTodos } = getState().todoState;
+      const todo = todos.filter((x) => x._id === id)[0];
+      if (
+        todo.isCompleted === input.isCompleted &&
+        (todo.title !== input.title ||
+          todo.memo !== input.memo ||
+          todo.important !== input.important)
+      ) {
+        dispatch({ type: UPDATE_TODOS, payload: response.data.todo });
+      } else {
+        dispatch({ type: CREATE_COMPLETED_TODO, payload: response.data.todo });
+        dispatch({ type: DELETE_TODOS, payload: id });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      toast.error(err.response.data, { autoClose: 2000 });
+    });
+};
+
+export const recreateTodos = (input, id) => async (dispatch, getState) => {
+  console.log("Inside recreate");
   axios
     .put(`/todos/update/${id}`, {
       headers: {
@@ -92,7 +132,8 @@ export const updateTodos = (input, id) => (dispatch) => {
     })
     .then((response) => {
       console.log(response);
-      dispatch({ type: UPDATE_TODOS, payload: { ...input, id } });
+      dispatch({ type: CREATE_TODOS, payload: response.data.todo });
+      dispatch({ type: DELETE_COMPLETED_TODOS, payload: id });
     })
     .catch((err) => {
       console.log(err);

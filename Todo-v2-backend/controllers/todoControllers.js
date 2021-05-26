@@ -45,7 +45,9 @@ module.exports = {
         { ...req.body.data },
         { new: true }
       );
-      return res.json({ todo, status: 200 });
+      const updatedTodo = await Todo.findById(todoId);
+      console.log(updatedTodo);
+      return res.json({ todo: updatedTodo, status: 200 });
     } catch (err) {
       console.log(err);
       return res.status(500).send("Internal Server Error");

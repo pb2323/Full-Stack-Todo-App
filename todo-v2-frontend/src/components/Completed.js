@@ -36,39 +36,37 @@ function BasicTextFields(props) {
 
   useEffect(() => {
     props.getTodosCompleted();
+    if (props.todo && props.todo.length > 0) setTodos(props.todo);
   }, []);
+
+  console.log(todos);
 
   useEffect(() => {
     props.currentTodo({});
-    if (props.todo && props.todo.lenght > 0) setTodos(props.todo);
+    if (props.todo && props.todo.length >= 0) setTodos(props.todo);
   }, [props.todo]);
   return (
     <Container style={{ marginTop: "5%" }}>
       <h1 style={{ textAlign: "left" }}>Completed Todos</h1>
       {todos.map((obj, index) => {
-        return (
-          <div
-            onClick={(e) => {
-              console.log("Inside here");
-              props.currentTodo({
-                title: obj.title,
-                memo: obj.memo,
-                important: obj.important,
-                id: obj._id,
-                isCompleted: true,
-              });
-              props.handleChangeTab(e, 2);
-            }}
-            key={index}
-            className={!obj.important ? classes.lists : classes.listsImp}
-          >
-            {obj.title +
-              " - Completed " +
-              new Date(obj.updatedAt).toString().slice(0, 25)}
+        if (obj)
+          return (
+            <div
+              onClick={(e) => {
+                console.log("Inside here");
+                props.currentTodo(obj);
+                props.handleChangeTab(e, 2);
+              }}
+              key={index}
+              className={!obj.important ? classes.lists : classes.listsImp}
+            >
+              {obj.title +
+                " - Completed " +
+                new Date(obj.updatedAt).toString().slice(0, 25)}
 
-            {/* {new Date(obj.updatedAt)} */}
-          </div>
-        );
+              {/* {new Date(obj.updatedAt)} */}
+            </div>
+          );
       })}
     </Container>
   );

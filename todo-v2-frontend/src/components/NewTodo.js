@@ -17,6 +17,7 @@ import {
   deleteTodos,
   createTodos,
   currentTodo,
+  recreateTodos,
 } from "../redux/actions/todoActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,10 +36,11 @@ function BasicTextFields({
   currentTodo,
   updateTodos,
   deleteTodos,
+  recreateTodos,
 }) {
   const [title, setTitle] = React.useState("");
   const [memo, setMemo] = React.useState("");
-  const [checked, changeCheck] = React.useState(false);
+  const [important, changeImportant] = React.useState(false);
   const classes = useStyles();
   toast.configure();
 
@@ -48,10 +50,11 @@ function BasicTextFields({
       if (current.hasOwnProperty("title")) {
         currentTodo({});
         updateTodos(
-          { title, memo, important: checked, isCompleted: false },
-          current.id
+          { title, memo, important: important, isCompleted: false },
+          current._id
         );
-      } else createTodos({ title, memo, important: checked });
+      } else
+        createTodos({ title, memo, important: important, isCompleted: false });
       handleChangeTab(e, 0);
     }
   };
@@ -59,9 +62,10 @@ function BasicTextFields({
   const onRecreate = (e) => {
     if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
     else {
-      updateTodos(
-        { title, memo, important: checked, isCompleted: false },
-        current.id
+      console.log("Inside onRecreate");
+      recreateTodos(
+        { title, memo, important, isCompleted: false },
+        current._id
       );
       currentTodo({});
       handleChangeTab(e, 0);
@@ -69,7 +73,7 @@ function BasicTextFields({
   };
 
   const onDelete = (e) => {
-    deleteTodos(current.id);
+    deleteTodos(current._id);
     current.isCompleted ? handleChangeTab(e, 1) : handleChangeTab(e, 0);
     currentTodo({});
   };
@@ -78,8 +82,8 @@ function BasicTextFields({
     if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
     else {
       updateTodos(
-        { title, memo, important: checked, isCompleted: true },
-        current.id
+        { title, memo, important: important, isCompleted: true },
+        current._id
       );
       currentTodo({});
       handleChangeTab(e, 1);
@@ -97,7 +101,7 @@ function BasicTextFields({
   useEffect(() => {
     setTitle(current.title);
     setMemo(current.memo);
-    changeCheck(current.important);
+    changeImportant(current.important);
   }, [current]);
 
   console.log(current.hasOwnProperty("title"));
@@ -128,9 +132,9 @@ function BasicTextFields({
             style={{ marginLeft: "0" }}
             control={
               <Checkbox
-                checked={checked}
+                checked={important}
                 onChange={(e) => {
-                  changeCheck(e.target.checked);
+                  changeImportant(e.target.checked);
                 }}
                 color="primary"
               />
@@ -196,4 +200,5 @@ export default connect(mapStateToProps, {
   updateTodos,
   deleteTodos,
   currentTodo,
+  recreateTodos,
 })(BasicTextFields);

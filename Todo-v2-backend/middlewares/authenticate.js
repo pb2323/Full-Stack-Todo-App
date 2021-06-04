@@ -8,16 +8,13 @@ const authenticate = async (req, res, next) => {
         ? req.headers.authorization
         : req.body.headers.Authorization
     );
-    console.log(req.headers);
     const payload = await jwt.verify(
       req.headers.authorization
         ? req.headers.authorization
         : req.body.headers.Authorization,
       "Secret Key"
     );
-    console.log(payload, "payload");
     const user = await User.findOne({ email: payload.email });
-    console.log(user, "user");
     req.user = user;
     next();
   } catch (err) {

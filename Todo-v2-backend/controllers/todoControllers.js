@@ -46,7 +46,6 @@ module.exports = {
         { new: true }
       );
       const updatedTodo = await Todo.findById(todoId);
-      console.log(updatedTodo);
       return res.json({ todo: updatedTodo, status: 200 });
     } catch (err) {
       console.log(err);

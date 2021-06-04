@@ -31,7 +31,6 @@ module.exports = {
       const user = new User({ ...req.body });
       await user.save();
       const updatedUser = await User.findOne({ email: email });
-      console.log(updatedUser, "updatedUser");
       const updatedEmail = updatedUser.email,
         updatedPassword = updatedUser.password;
       const token = await jwt.sign(
@@ -41,10 +40,7 @@ module.exports = {
           expiresIn: 1000 * 60 * 60 * 3,
         }
       );
-      console.log(token, "registration token");
       const payload = await jwt.verify(token, "Secret Key");
-      console.log(payload, "payload");
-      console.log(updatedEmail, updatedPassword);
       return res.json({
         message: "Registration Successfull",
         status: 200,
@@ -61,7 +57,8 @@ module.exports = {
   deleteUser: async (req, res) => {
     try {
       const user = req.user;
-      await user.remove();
+      const response = await user.remove();
+      console.log(response, "deleted user");
       // const user=await User.findById(user._id);
       // console.log(user);
       return res.json({ message: "User removed successfully", status: 200 });

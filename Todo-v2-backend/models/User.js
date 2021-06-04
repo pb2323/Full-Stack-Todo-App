@@ -59,7 +59,7 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-userSchema.pre("delete", async (next) => {
+userSchema.pre("remove", async function (next) {
   try {
     await Todo.deleteMany({ user: this._id });
     next();

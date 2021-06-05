@@ -5,7 +5,6 @@ import {
   DELETE_TODOS,
   CURRENT_TODO,
   GET_TODOS_COMPLETED,
-  RECREATE_TODOS,
   CREATE_COMPLETED_TODO,
   DELETE_COMPLETED_TODOS,
 } from "../actionTypes";
@@ -24,11 +23,12 @@ export const getTodos = () => async (dispatch) => {
       },
     });
 
-    console.log(response);
     dispatch({ type: GET_TODOS, payload: response.data });
+    return { status: 200 };
   } catch (err) {
     console.log(err);
     toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
   }
 };
 
@@ -41,20 +41,23 @@ export const getTodosCompleted = () => async (dispatch) => {
       },
     });
 
-    console.log(response);
     dispatch({ type: GET_TODOS_COMPLETED, payload: response.data });
+    return { status: 200 };
   } catch (err) {
     console.log(err);
     toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
   }
 };
 
 export const currentTodo = (inp) => async (dispatch) => {
   try {
     dispatch({ type: CURRENT_TODO, payload: inp });
+    return { status: 200 };
   } catch (err) {
     console.log(err);
     toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
   }
 };
 
@@ -72,17 +75,18 @@ export const createTodos = (input) => async (dispatch) => {
         isCompleted: input.isCompleted,
       },
     });
-    console.log(response);
     dispatch({ type: CREATE_TODOS, payload: response.data });
+    return { status: 200 };
   } catch (err) {
     console.log(err);
     toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
   }
 };
 
 export const updateTodos = (input, id) => async (dispatch, getState) => {
-  axios
-    .put(`/todos/update/${id}`, {
+  try {
+    const response = await axios.put(`/todos/update/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
@@ -93,32 +97,35 @@ export const updateTodos = (input, id) => async (dispatch, getState) => {
         important: input.important,
         isCompleted: input.isCompleted ? input.isCompleted : false,
       },
-    })
-    .then((response) => {
-      const { todos, completedTodos } = getState().todoState;
-      const todo = todos.filter((x) => x._id === id)[0];
-      if (
-        todo.isCompleted === input.isCompleted &&
-        (todo.title !== input.title ||
-          todo.memo !== input.memo ||
-          todo.important !== input.important)
-      ) {
-        dispatch({ type: UPDATE_TODOS, payload: response.data.todo });
-      } else {
-        dispatch({ type: CREATE_COMPLETED_TODO, payload: response.data.todo });
-        dispatch({ type: DELETE_TODOS, payload: id });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      toast.error(err.response.data, { autoClose: 2000 });
     });
+
+    const { todos } = getState().todoState;
+    const todo = todos.filter((x) => x._id === id)[0];
+    if (
+      todo.isCompleted === input.isCompleted &&
+      (todo.title !== input.title ||
+        todo.memo !== input.memo ||
+        todo.important !== input.important)
+    ) {
+      dispatch({ type: UPDATE_TODOS, payload: response.data.todo });
+    } else {
+      dispatch({
+        type: CREATE_COMPLETED_TODO,
+        payload: response.data.todo,
+      });
+      dispatch({ type: DELETE_TODOS, payload: id });
+    }
+    return { status: 200 };
+  } catch (err) {
+    console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
+  }
 };
 
 export const recreateTodos = (input, id) => async (dispatch, getState) => {
-  console.log("Inside recreate");
-  axios
-    .put(`/todos/update/${id}`, {
+  try {
+    const response = await axios.put(`/todos/update/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
@@ -129,32 +136,31 @@ export const recreateTodos = (input, id) => async (dispatch, getState) => {
         important: input.important,
         isCompleted: input.isCompleted ? input.isCompleted : false,
       },
-    })
-    .then((response) => {
-      console.log(response);
-      dispatch({ type: CREATE_TODOS, payload: response.data.todo });
-      dispatch({ type: DELETE_COMPLETED_TODOS, payload: id });
-    })
-    .catch((err) => {
-      console.log(err);
-      toast.error(err.response.data, { autoClose: 2000 });
     });
+
+    dispatch({ type: CREATE_TODOS, payload: response.data.todo });
+    dispatch({ type: DELETE_COMPLETED_TODOS, payload: id });
+    return { status: 200 };
+  } catch (err) {
+    console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
+  }
 };
 
-export const deleteTodos = (id) => (dispatch) => {
-  axios
-    .delete(`/todos/delete/${id}`, {
+export const deleteTodos = (id) => async (dispatch) => {
+  try {
+    await axios.delete(`/todos/delete/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
       },
-    })
-    .then((response) => {
-      console.log(response);
-      dispatch({ type: DELETE_TODOS, payload: id });
-    })
-    .catch((err) => {
-      console.log(err);
-      toast.error(err.response.data, { autoClose: 2000 });
     });
+    dispatch({ type: DELETE_TODOS, payload: id });
+    return { status: 200 };
+  } catch (err) {
+    console.log(err);
+    toast.error(err.response.data, { autoClose: 2000 });
+    return { status: 500 };
+  }
 };

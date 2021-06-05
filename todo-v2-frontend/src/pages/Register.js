@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import { registerUser } from "../redux/actions/userActions";
+import { setLoad } from "../redux/actions/loadAction";
 import { Redirect } from "react-router-dom";
 import { isEqual } from "lodash";
 
@@ -55,7 +56,7 @@ function usePrevious(value) {
   return ref.current;
 }
 
-function Register({ user, registerUser }) {
+function Register({ user, registerUser, setLoad }) {
   const classes = useStyles();
 
   const [email, setEmail] = useState("");
@@ -67,7 +68,9 @@ function Register({ user, registerUser }) {
 
   const onsubmit = async (e) => {
     e.preventDefault();
-    await registerUser({ email, password, name, rememberMe });
+    setLoad(true);
+    const response = await registerUser({ email, password, name, rememberMe });
+    if (response.status === 500) setLoad(false);
   };
 
   useEffect(() => {
@@ -180,4 +183,4 @@ const mapStateToProps = (storeState) => {
   };
 };
 
-export default connect(mapStateToProps, { registerUser })(Register);
+export default connect(mapStateToProps, { registerUser, setLoad })(Register);

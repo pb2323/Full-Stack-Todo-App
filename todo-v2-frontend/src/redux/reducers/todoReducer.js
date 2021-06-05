@@ -22,12 +22,10 @@ const todoReducer = (state = { ...initialState }, action) => {
   let id;
   switch (type) {
     case GET_TODOS:
-      console.log({ ...state, todos: payload.todos });
       return { ...state, todos: payload.todos };
     case GET_TODOS_COMPLETED:
       return { ...state, completedTodos: payload.todos };
     case CURRENT_TODO:
-      console.log(payload, type, "Red curr");
       return { ...state, current: payload };
     case CREATE_TODOS:
       arr = state.todos;
@@ -61,7 +59,6 @@ const todoReducer = (state = { ...initialState }, action) => {
       arr = state.completedTodos.filter((x) => x && x._id !== id);
       return { ...state, todos: arr };
     default:
-      console.log("Default todo");
       return state;
   }
 };

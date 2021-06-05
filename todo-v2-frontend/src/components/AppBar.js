@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { deleteUser, logoutUser } from "../redux/actions/userActions";
+import Loader from "./LinearIndeterminate";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ButtonAppBar({ user, logoutUser, deleteUser }) {
+function ButtonAppBar({ user, logoutUser, deleteUser, load }) {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -85,6 +86,7 @@ function ButtonAppBar({ user, logoutUser, deleteUser }) {
           </Menu>
         </Toolbar>
       </AppBar>
+      {load ? <Loader /> : ""}
     </div>
   );
 }
@@ -92,6 +94,7 @@ function ButtonAppBar({ user, logoutUser, deleteUser }) {
 const mapStateToProps = (storeState) => {
   return {
     user: storeState.userState.user,
+    load: storeState.loadState.load,
   };
 };
 

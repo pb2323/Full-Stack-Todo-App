@@ -19,6 +19,7 @@ import {
   currentTodo,
   recreateTodos,
 } from "../redux/actions/todoActions";
+import { setLoad } from "../redux/actions/loadAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +38,7 @@ function BasicTextFields({
   updateTodos,
   deleteTodos,
   recreateTodos,
+  setLoad,
 }) {
   const [title, setTitle] = React.useState("");
   const [memo, setMemo] = React.useState("");
@@ -44,49 +46,61 @@ function BasicTextFields({
   const classes = useStyles();
   toast.configure();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
     else {
+      setLoad(true);
       if (current.hasOwnProperty("title")) {
-        currentTodo({});
-        updateTodos(
+        await currentTodo({});
+        await updateTodos(
           { title, memo, important: important, isCompleted: false },
           current._id
         );
       } else
-        createTodos({ title, memo, important: important, isCompleted: false });
+        await createTodos({
+          title,
+          memo,
+          important: important,
+          isCompleted: false,
+        });
       handleChangeTab(e, 0);
+      setLoad(false);
     }
   };
 
-  const onRecreate = (e) => {
+  const onRecreate = async (e) => {
     if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
     else {
-      console.log("Inside onRecreate");
-      recreateTodos(
+      setLoad(true);
+      await recreateTodos(
         { title, memo, important, isCompleted: false },
         current._id
       );
-      currentTodo({});
+      await currentTodo({});
       handleChangeTab(e, 0);
+      setLoad(false);
     }
   };
 
-  const onDelete = (e) => {
-    deleteTodos(current._id);
+  const onDelete = async (e) => {
+    setLoad(true);
+    await deleteTodos(current._id);
     current.isCompleted ? handleChangeTab(e, 1) : handleChangeTab(e, 0);
-    currentTodo({});
+    await currentTodo({});
+    setLoad(false);
   };
 
-  const onComplete = (e) => {
+  const onComplete = async (e) => {
     if (title === "") toast.error("Title is mandatory", { autoClose: 2000 });
     else {
-      updateTodos(
+      setLoad(true);
+      await updateTodos(
         { title, memo, important: important, isCompleted: true },
         current._id
       );
-      currentTodo({});
+      await currentTodo({});
       handleChangeTab(e, 1);
+      setLoad(false);
     }
   };
 
@@ -201,4 +215,5 @@ export default connect(mapStateToProps, {
   deleteTodos,
   currentTodo,
   recreateTodos,
+  setLoad,
 })(BasicTextFields);

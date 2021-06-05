@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/userActions";
+import { setLoad } from "../redux/actions/loadAction";
 import { Redirect } from "react-router-dom";
 import { isEqual } from "lodash";
 
@@ -55,7 +56,7 @@ function usePrevious(value) {
   return ref.current;
 }
 
-function SignIn({ loginUser, user }) {
+function SignIn({ loginUser, user, setLoad }) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,11 +66,12 @@ function SignIn({ loginUser, user }) {
 
   const onsubmit = async (e) => {
     e.preventDefault();
-    await loginUser({ email, password, rememberMe });
+    setLoad(true);
+    const response = await loginUser({ email, password, rememberMe });
+    if (response.status === 500) setLoad(false);
   };
 
   useEffect(() => {
-    console.log(prevUser, user);
     if (!isEqual(prevUser, user)) {
       setUser(user);
     }
@@ -157,7 +159,7 @@ function SignIn({ loginUser, user }) {
       </Container>
     );
   else {
-    return <Redirect to={{pathname:"/todos"}}></Redirect>;
+    return <Redirect to={{ pathname: "/todos" }}></Redirect>;
   }
 }
 
@@ -167,4 +169,4 @@ const mapStateToProps = (storeState) => {
   };
 };
 
-export default connect(mapStateToProps, { loginUser })(SignIn);
+export default connect(mapStateToProps, { loginUser, setLoad })(SignIn);

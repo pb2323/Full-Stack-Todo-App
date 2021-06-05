@@ -11,7 +11,6 @@ const reducer = (state = initialState, action) => {
     case REGISTER_USER:
       return { ...state, user: payload };
     default:
-      console.log("Default user");
       return state;
   }
 };

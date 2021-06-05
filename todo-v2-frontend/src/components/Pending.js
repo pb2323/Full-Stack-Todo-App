@@ -9,6 +9,7 @@ import {
   createTodos,
   currentTodo,
 } from "../redux/actions/todoActions";
+import { setLoad } from "../redux/actions/loadAction";
 
 const useStyles = makeStyles((theme) => ({
   listsImp: {
@@ -31,18 +32,26 @@ const useStyles = makeStyles((theme) => ({
 
 function BasicTextFields(props) {
   useEffect(() => {
-    props.getTodos();
-    if (props.todo && props.todo.length > 0) setTodos(props.todo);
+    async function loadAndFetch() {
+      props.setLoad(true);
+      await props.getTodos();
+      if (props.todo && props.todo.length > 0) setTodos(props.todo);
+      props.setLoad(false);
+    }
+    loadAndFetch();
   }, []);
 
   useEffect(() => {
-    props.currentTodo({});
-    console.log(props.todo);
-    if (props.todo && props.todo.length >= 0) setTodos(props.todo);
+    async function loadAndFetch() {
+      props.setLoad(true);
+      props.currentTodo({});
+      if (props.todo && props.todo.length >= 0) setTodos(props.todo);
+      props.setLoad(false);
+    }
+    loadAndFetch();
   }, [props.todo]);
 
   const [todos, setTodos] = React.useState([]);
-  console.log(todos);
 
   const classes = useStyles();
   return (
@@ -81,4 +90,5 @@ export default connect(mapStateToProps, {
   updateTodos,
   deleteTodos,
   currentTodo,
+  setLoad,
 })(BasicTextFields);

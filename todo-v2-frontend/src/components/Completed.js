@@ -9,6 +9,7 @@ import {
   getTodosCompleted,
   currentTodo,
 } from "../redux/actions/todoActions";
+import { setLoad } from "../redux/actions/loadAction";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,15 +36,23 @@ function BasicTextFields(props) {
   const classes = useStyles();
 
   useEffect(() => {
-    props.getTodosCompleted();
-    if (props.todo && props.todo.length > 0) setTodos(props.todo);
+    async function loadAndFetch() {
+      props.setLoad(true);
+      await props.getTodosCompleted();
+      if (props.todo && props.todo.length > 0) setTodos(props.todo);
+      props.setLoad(false);
+    }
+    loadAndFetch();
   }, []);
 
-  console.log(todos);
-
   useEffect(() => {
-    props.currentTodo({});
-    if (props.todo && props.todo.length >= 0) setTodos(props.todo);
+    async function loadAndFetch() {
+      props.setLoad(true);
+      await props.currentTodo({});
+      if (props.todo && props.todo.length >= 0) setTodos(props.todo);
+      props.setLoad(false);
+    }
+    loadAndFetch();
   }, [props.todo]);
   return (
     <Container style={{ marginTop: "5%" }}>
@@ -86,4 +95,5 @@ export default connect(mapStateToProps, {
   deleteTodos,
   getTodosCompleted,
   currentTodo,
+  setLoad,
 })(BasicTextFields);

@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function FullWidthTabs({ user, todos }) {
-  console.log(user, todos);
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);

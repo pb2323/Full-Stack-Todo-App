@@ -1,0 +1,21 @@
+{
+  "name": "todo-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node Todo-v2-backend/index.js",
+    "build": "cd todo-v2-frontend && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pb2323/Full-Stack-Todo-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pb2323/Full-Stack-Todo-App/issues"
+  },
+  "homepage": "https://github.com/pb2323/Full-Stack-Todo-App#readme"
+}

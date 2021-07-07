@@ -1,4 +1,4 @@
-# Full-Stack-Todo-App (MERN Stack)
+# TODOWOO
 
 Hosted Website - https://todowooo.herokuapp.com/
 

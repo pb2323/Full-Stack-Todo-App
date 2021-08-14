@@ -1,6 +1,6 @@
-#WELCOME
+# WELCOME
 
-## TodoWOO
+## TodoWoo
 
 Hosted Website - https://todowooo.herokuapp.com/
 

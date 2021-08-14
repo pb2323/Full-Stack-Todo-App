@@ -16,8 +16,9 @@ A simple and responsive todo app in which users can create,update,delete todos.<
   d.) Inside todo-v2-frontend folder run npm start to start your frontend.<br>
   
 ### MongoDB Atlas
-  a.) Make a .env file with variable "password" as your Atlas password, myUrl as mongodb+srv://YourUserName:<password>@cluster0-    rt0tw.mongodb.net/YourDatabaseName?retryWrites=true&w=majority <br>
-  b.) Follow step c and d from above
+  a.) Make a .env file with variable "myPassword" as your Atlas password, myUrl as mongodb+srv://YourUserName:password@cluster0-    rt0tw.mongodb.net/YourDatabaseName?retryWrites=true&w=majority <br>
+  b.) Replace "YourUserName", "YourDatabaseName" with appropriate values.<br>
+  c.) Follow step c and d from above
   
 
 ### Glimpses of app
